@@ -8,6 +8,16 @@ const checkAllergy = require("./utils/allergyChecker");
 
 require("dotenv").config();
 
+const { GoogleGenerativeAI } =
+require("@google/generative-ai");
+
+const genAI =
+new GoogleGenerativeAI(process.env.GEMINI_KEY);
+
+const model =
+genAI.getGenerativeModel({
+  model: "gemini-flash-latest"
+});
 
 
 const foodDB = {
@@ -174,7 +184,7 @@ app.post("/analyze-food", async (req,res)=>{
 
     const key = food.toLowerCase().replace(/\s/g,"");
 
-    const ingredients = foodDB[key];
+    const ingredients = await fetchIngredientsGemini(food);
 
     if(!ingredients){
       return res.send("Food not found");
@@ -211,3 +221,24 @@ app.get("/user/:id", async (req,res)=>{
   const user = await User.findById(req.params.id);
   res.json(user);
 });
+
+async function fetchIngredientsGemini(food){
+
+  const prompt = `
+  Provide ONLY a comma-separated list of
+  cooking ingredients used in ${food}.
+  No explanation.
+  `;
+
+  const result =
+  await model.generateContent(prompt);
+
+  const text =
+  result.response.text();
+
+  return text
+    .replace(/\n/g,",")
+    .split(",")
+    .map(i=>i.trim().toLowerCase())
+    .filter(Boolean);
+}
