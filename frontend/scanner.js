@@ -3,13 +3,13 @@ const API = "https://allergy-scanner.onrender.com";
 const userId =
   localStorage.getItem("userId");
 
-if(!userId){
+if (!userId) {
 
   alert("Login first!");
-  window.location="login.html";
+  window.location = "login.html";
 }
 
-async function scanFood(){
+async function scanFood() {
 
   const food =
     document.getElementById("foodInput").value;
@@ -17,11 +17,11 @@ async function scanFood(){
   const res = await fetch(
     API + "/analyze-food",
     {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
       },
-      body:JSON.stringify({
+      body: JSON.stringify({
         userId,
         food
       })
@@ -33,36 +33,36 @@ async function scanFood(){
   const div =
     document.getElementById("result");
 
-  if(data.result.safe){
+  if (data.result.safe) {
 
     div.innerHTML =
       "✅ SAFE TO EAT";
-    div.style.color="green";
+    div.style.color = "green";
 
-  }else{
+  } else {
 
     div.innerHTML =
       "🚨 WARNING: " +
       data.result.matches.join(", ");
-    div.style.color="red";
+    div.style.color = "red";
   }
 }
 
-async function saveAllergies(){
+async function saveAllergies() {
 
   const allergies =
     document.getElementById("allergyInput")
-    .value
-    .split(",");
+      .value
+      .split(",");
 
   await fetch(
     API + "/save-allergies",
     {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
       },
-      body:JSON.stringify({
+      body: JSON.stringify({
         userId,
         allergies
       })
@@ -70,4 +70,32 @@ async function saveAllergies(){
   );
 
   alert("Allergies saved ✅");
+}
+
+
+
+function showResultUI(data){
+
+  const div =
+    document.getElementById("result");
+
+  div.innerHTML =
+    `<p><b>Ingredients:</b>
+      ${data.ingredients.join(", ")}</p>`;
+
+  if(data.result.safe){
+
+    div.innerHTML +=
+      `<p class="safe">
+        ✅ Safe to eat
+      </p>`;
+
+  }else{
+
+    div.innerHTML +=
+      `<p class="danger">
+        🚨 Allergy detected:
+        ${data.result.matches.join(", ")}
+      </p>`;
+  }
 }

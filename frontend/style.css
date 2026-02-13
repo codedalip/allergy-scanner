@@ -41,3 +41,22 @@ button{
 button:hover{
   opacity:0.9;
 }
+.card{
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:15px;
+  width:300px;
+  margin:auto;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.safe{
+  color:green;
+  font-weight:bold;
+}
+
+.danger{
+  color:red;
+  font-weight:bold;
+}
