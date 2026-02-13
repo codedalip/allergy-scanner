@@ -1,4 +1,4 @@
-const API = "http://localhost:3000";
+const API = "https://allergy-scanner.onrender.com";
 
 const userId =
   localStorage.getItem("userId");
