@@ -39,3 +39,30 @@ async function login(){
     alert("Login failed");
   }
 }
+
+async function signup(){
+
+  const email =
+    document.getElementById("email").value;
+
+  const password =
+    document.getElementById("password").value;
+
+  const res = await fetch(
+    API + "/signup",
+    {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        email,
+        password
+      })
+    }
+  );
+
+  alert(await res.text());
+
+  window.location="login.html";
+}
